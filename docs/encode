@@ -1,52 +1,56 @@
-#### Decode Image
+### Overview
 
-- **URL:** `/decode`
+This API allows users to encode a secret message into an image using steganography techniques. The image encoding is performed using the Least Significant Bit (LSB) method. The API is built using Flask and the Pillow library for image processing.
+
+### Base URL
+
+```
+http://127.0.0.1:5000
+```
+
+### Endpoints
+
+#### Encode Image
+
+- **URL:** `/encode`
 - **Method:** `POST`
-- **Description:** Decodes a secret message from an image.
+- **Description:** Encodes a secret message into an image and returns the modified image.
 
 ##### Request
 
 - **Headers:**
   - `Content-Type: multipart/form-data`
 - **Parameters:**
-  - `file`: (required) The image file from which to decode the message. Must be provided as a form-data file upload.
+  - `file`: (required) The image file to encode the message into. Must be provided as a form-data file upload.
+  - `message`: (required) The secret message to encode into the image. Must be provided as a form-data text field.
 
 ##### Example Request
 
 Using `curl`:
 
-To get output to the terminal
 ```sh
-curl -X POST http://localhost:5000/decode -F "file=@encoded_image.png"
-```
-
-To save output in a text file
-```sh
-curl -X POST http://localhost:5000/decode -F "file=@encoded_image.png" -o decoded_message.txt
+curl -X POST -F "file=@path_to_your_image.png" -F "message=Your secret message" http://127.0.0.1:5000/encode --output encoded_image.png
 ```
 
 Using Postman:
 
 1. Select `POST` method.
-2. Enter `http://127.0.0.1:5000/decode` in the URL field.
+2. Enter `http://127.0.0.1:5000/encode` in the URL field.
 3. In the `Body` tab, select `form-data`.
-4. Add a key `file`, set type to `File`, and choose the encoded image file.
-5. Click `Send`.
+4. Add a key `file`, set type to `File`, and choose the image file.
+5. Add another key `message`, set type to `Text`, and enter the secret message.
+6. Click `Send`.
+7. Save the response as a file named `encoded_image.png`.
 
 ##### Response
 
 - **Success (200 OK):**
-  - **Description:** The decoded message.
-  - **Content-Type:** `application/json`
-  - **Body:**
-    ```json
-    {
-      "message": "Your decoded secret message"
-    }
-    ```
+  - **Description:** The encoded image file.
+  - **Content-Type:** `image/png`, `image/jpeg`, etc. (depends on the input image format)
+  - The response contains the encoded image as a downloadable file.
 
 - **Error (400 Bad Request):**
-  - **Description:** Returned when the request is missing the required file parameter or contains an invalid file.
+  - **Description:** Returned when the request is missing required parameters or contains invalid data.
   - **Content-Type:** `application/json`
   - **Body:**
     ```json
@@ -56,7 +60,7 @@ Using Postman:
     ```
 
 - **Error (500 Internal Server Error):**
-  - **Description:** Returned when there is an internal server error during the decoding process.
+  - **Description:** Returned when there is an internal server error during the encoding process.
   - **Content-Type:** `application/json`
   - **Body:**
     ```json
@@ -68,11 +72,7 @@ Using Postman:
 ##### Example Response
 
 - **Success:**
-  ```json
-  {
-    "message": "Your decoded secret message"
-  }
-  ```
+  - The response contains the encoded image as a file download.
 
 - **Error:**
   ```json
@@ -84,6 +84,12 @@ Using Postman:
   ```json
   {
     "error": "No selected file"
+  }
+  ```
+
+  ```json
+  {
+    "error": "No message provided"
   }
   ```
 
