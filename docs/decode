@@ -1,0 +1,96 @@
+Decode Image
+
+    URL: /decode
+    Method: POST
+    Description: Decodes a secret message from an image.
+
+Request
+
+    Headers:
+        Content-Type: multipart/form-data
+    Parameters:
+        file: (required) The image file from which to decode the message. Must be provided as a form-data file upload.
+
+Example Request
+
+Using curl:
+
+sh
+
+curl -X POST -F "file=@path_to_encoded_image.png" http://127.0.0.1:5000/decode
+
+Using Postman:
+
+    Select POST method.
+    Enter http://127.0.0.1:5000/decode in the URL field.
+    In the Body tab, select form-data.
+    Add a key file, set type to File, and choose the encoded image file.
+    Click Send.
+
+Response
+
+    Success (200 OK):
+        Description: The decoded message.
+        Content-Type: application/json
+        Body:
+
+        json
+
+    {
+      "message": "Your decoded secret message"
+    }
+
+Error (400 Bad Request):
+
+    Description: Returned when the request is missing the required file parameter or contains an invalid file.
+    Content-Type: application/json
+    Body:
+
+    json
+
+    {
+      "error": "Error message describing the issue"
+    }
+
+Error (500 Internal Server Error):
+
+    Description: Returned when there is an internal server error during the decoding process.
+    Content-Type: application/json
+    Body:
+
+    json
+
+        {
+          "error": "Error message describing the issue"
+        }
+
+Example Response
+
+    Success:
+
+    json
+
+{
+  "message": "Your decoded secret message"
+}
+
+Error:
+
+json
+
+{
+  "error": "No file part"
+}
+
+json
+
+{
+  "error": "No selected file"
+}
+
+json
+
+    {
+      "error": "Detailed error message for internal server error"
+    }
+
