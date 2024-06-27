@@ -1,0 +1,13 @@
+I am experiencing too much configuration issues with TensorFlow, encountering errors like "Error: Installation of TensorFlow not found" even though TensorFlow is installed.
+
+This is not due to issues with the Python environment, package versions, or interoperability between R and Python.
+
+To troubleshoot these issues, I have tried reinstalling TensorFlow, checking the Python environment and package versions, and ensuring that the correct Python environment is being used.
+
+Also, the learning curve for TensorFlow is steep, especially coupled with the fact that i have no prior experience in machine learning or deep learning.
+
+All i want to write is a stegnography application, for this reason even though it's kinda late, I will change strategies, use different simple to implement libraries and build my project as fast as I can
+
+I GAT THIS!!!
+
+#IWillDoHardThings
