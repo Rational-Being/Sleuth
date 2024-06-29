@@ -1,10 +1,14 @@
-import cv2
+import ffmpeg
 import numpy as np
+import cv2
 
 def encode_video(video_path, message, output_path):
     cap = cv2.VideoCapture(video_path)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter(output_path, fourcc, 20.0, (int(cap.get(3)), int(cap.get(4))))
+    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
     message += chr(0)  # Null-terminate the message
     bin_message = ''.join(format(ord(char), '08b') for char in message)
@@ -18,13 +22,13 @@ def encode_video(video_path, message, output_path):
 
         if frame_idx < message_len:
             frame_flat = frame.flatten()
-            for i in range(0, 3 * (frame.shape[0] * frame.shape[1]), 3):
+            for i in range(0, len(frame_flat), 3):
                 if frame_idx < message_len:
                     frame_flat[i] = (frame_flat[i] & ~1) | int(bin_message[frame_idx])
                     frame_idx += 1
                 else:
                     break
-            frame = frame_flat.reshape(frame.shape)
+            frame = frame_flat.reshape((height, width, 3))
 
         out.write(frame)
 
@@ -32,6 +36,22 @@ def encode_video(video_path, message, output_path):
     out.release()
 
 def decode_video(video_path):
+
+    # cap = cv2.VideoCapture(video_path)
+    # bin_message = ''
+
+    # while True:
+    #     ret, frame = cap.read()
+    #     if not ret:
+    #         break
+
+    #     frame_flat = frame.flatten()
+    #     for i in range(0, 3 * (frame.shape[0] * frame.shape[1]), 3):
+    #         bin_message += str(frame_flat[i] & 1)
+
+    # cap.release()
+
+
     cap = cv2.VideoCapture(video_path)
     bin_message = ''
     frame_idx = 0
