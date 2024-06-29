@@ -26,3 +26,31 @@ The function uses the PIL to open the image and iterate through each pixel to ex
 The `decode_image` function returns the extracted hidden message as a string. If an error occurs during decoding, it returns `None`.
 
 You can use these functions in your Flask application to handle the encoding and decoding of steganographic images.
+
+
+
+## audio_denc.py
+
+The `audio_denc.py` file contains two functions for encoding and decoding steganographic messages within audio files using the Least Significant Bit (LSB) technique.
+
+### encode_audio
+
+The `encode_audio` function encodes a given message into an audio file using LSB steganography. It takes three parameters:
+
+- `audio_path` (str): The path to the input audio file.
+- `message` (str): The message to be encoded.
+- `output_path` (str): The path where the encoded audio file will be saved.
+
+The function uses the `pydub` library to load the audio file, convert the samples to a numpy array, and then iterates through each sample to hide the message in the least significant bit. If the message is too long to encode in the given audio file, the function raises a `ValueError`.
+
+### decode_audio
+
+The `decode_audio` function decodes a message from an audio file using LSB steganography. It takes one parameter:
+
+- `audio_path` (str): The path to the input audio file.
+
+The function uses the `pydub` library to load the audio file, convert the samples to a numpy array, and then iterates through each sample to extract the hidden message from the least significant bit. The binary representation of the message is then converted back to a string format.
+
+The `decode_audio` function returns the decoded message as a string.
+
+You can use these functions in your Flask application to handle the encoding and decoding of steganographic messages in audio files.
