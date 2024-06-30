@@ -2,33 +2,50 @@
 
 - **URL:** `/encode_video`
 - **Method:** `POST`
-- **Description:** Encodes a secret message into a video file and returns the modified video file.
+- **Description:** Encodes a message into a video file with encryption.
+- **Authentication:** HTTP Basic Authentication
 
 ##### Request
 
 - **Headers:**
+  - `Authorization: Basic <base64-encoded-credentials>`
   - `Content-Type: multipart/form-data`
 - **Parameters:**
-  - `file`: (required) The video file to encode the message into. Must be provided as a form-data file upload.
-  - `message`: (required) The secret message to encode into the video file. Must be provided as a form-data text field.
+  - `file`: (required) The video file to encode the message into.
+  - `message`: (required) The message to encode.
+  - `password`: (required) The password to encrypt the message.
 
 ##### Example Request
 
 Using `curl`:
 
 ```sh
-curl -X POST -F "file=@path_to_your_video.avi" -F "message=Your secret message" http://127.0.0.1:5000/encode_video --output encoded_video.avi
+curl -u username:password -X POST -F "file=@path_to_your_video.mp4" -F "message=Your secret message" -F "password=Strong_Pasaaword" http://127.0.0.1:5000/encode_video --output encoded_video.mp4
 ```
 
-Using Postman:
+#### Decode Video
 
-1. Select `POST` method.
-2. Enter `http://127.0.0.1:5000/encode_video` in the URL field.
-3. In the `Body` tab, select `form-data`.
-4. Add a key `file`, set type to `File`, and choose the video file.
-5. Add another key `message`, set type to `Text`, and enter the secret message.
-6. Click `Send`.
-7. Save the response as a file named `encoded_video.avi`.
+- **URL:** `/decode_video`
+- **Method:** `POST`
+- **Description:** Decodes and decrypts a message from a video file.
+- **Authentication:** HTTP Basic Authentication
+
+##### Request
+
+- **Headers:**
+  - `Authorization: Basic <base64-encoded-credentials>`
+  - `Content-Type: multipart/form-data`
+- **Parameters:**
+  - `file`: (required) The video file to decode the message from.
+  - `password`: (required) The password to decrypt the message.
+
+##### Example Request
+
+Using `curl`:
+
+```sh
+curl -u username:password -X POST -F "file=@encoded_video.mp4" -F "password=Strong_Pasaaword" http://127.0.0.1:5000/decode_video
+```
 
 ##### Response
 

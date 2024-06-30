@@ -14,33 +14,50 @@ http://127.0.0.1:5000
 
 - **URL:** `/encode_image`
 - **Method:** `POST`
-- **Description:** Encodes a secret message into an image and returns the modified image.
+- **Description:** Encodes a message into an image file with encryption.
+- **Authentication:** HTTP Basic Authentication
 
 ##### Request
 
 - **Headers:**
+  - `Authorization: Basic <base64-encoded-credentials>`
   - `Content-Type: multipart/form-data`
 - **Parameters:**
-  - `file`: (required) The image file to encode the message into. Must be provided as a form-data file upload.
-  - `message`: (required) The secret message to encode into the image. Must be provided as a form-data text field.
+  - `file`: (required) The image file to encode the message into.
+  - `message`: (required) The message to encode.
+  - `password`: (required) The password to encrypt the message.
 
 ##### Example Request
 
 Using `curl`:
 
 ```sh
-curl -X POST -F "file=@path_to_your_image.png" -F "message=Your secret message" http://127.0.0.1:5000/encode --output encoded_image.png
+curl -u username:password -X POST -F "file=@path_to_your_image.png" -F "message=Your secret message" -F "password=Strong_Pasaaword" http://127.0.0.1:5000/encode_image --output encoded_image.png
 ```
 
-Using Postman:
+#### Decode Image
 
-1. Select `POST` method.
-2. Enter `http://127.0.0.1:5000/encode` in the URL field.
-3. In the `Body` tab, select `form-data`.
-4. Add a key `file`, set type to `File`, and choose the image file.
-5. Add another key `message`, set type to `Text`, and enter the secret message.
-6. Click `Send`.
-7. Save the response as a file named `encoded_image.png`.
+- **URL:** `/decode_image`
+- **Method:** `POST`
+- **Description:** Decodes and decrypts a message from an image file.
+- **Authentication:** HTTP Basic Authentication
+
+##### Request
+
+- **Headers:**
+  - `Authorization: Basic <base64-encoded-credentials>`
+  - `Content-Type: multipart/form-data`
+- **Parameters:**
+  - `file`: (required) The image file to decode the message from.
+  - `password`: (required) The password to decrypt the message.
+
+##### Example Request
+
+Using `curl`:
+
+```sh
+curl -u username:password -X POST -F "file=@encoded_image.png" -F "password=Strong_Pasaaword" http://127.0.0.1:5000/decode_image
+```
 
 ##### Response
 

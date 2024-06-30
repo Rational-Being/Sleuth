@@ -6,49 +6,54 @@
     python app.py
     ```
 
-2. **Use `curl` or Postman to test the `/encode_audio` and `/decode_audio` endpoints:**
-
-    ```sh
-    # Encode audio
-    curl -X POST -F "file=@path_to_your_audio.wav" -F "message=Your secret message" http://127.0.0.1:5000/encode_audio --output encoded_audio.wav
-
-    # Decode audio
-    curl -X POST -F "file=@encoded_audio.wav" http://127.0.0.1:5000/decode_audio
-    ```
-
-### Comprehensive Documentation for Audio Encoding and Decoding Endpoints
-
 #### Encode Audio
 
 - **URL:** `/encode_audio`
 - **Method:** `POST`
-- **Description:** Encodes a secret message into an audio file and returns the modified audio file.
+- **Description:** Encodes a message into an audio file with encryption.
+- **Authentication:** HTTP Basic Authentication
 
 ##### Request
 
 - **Headers:**
+  - `Authorization: Basic <base64-encoded-credentials>`
   - `Content-Type: multipart/form-data`
 - **Parameters:**
-  - `file`: (required) The audio file to encode the message into. Must be provided as a form-data file upload.
-  - `message`: (required) The secret message to encode into the audio file. Must be provided as a form-data text field.
+  - `file`: (required) The audio file to encode the message into.
+  - `message`: (required) The message to encode.
+  - `password`: (required) The password to encrypt the message.
 
 ##### Example Request
 
 Using `curl`:
 
 ```sh
-curl -X POST -F "file=@path_to_your_audio.wav" -F "message=Your secret message" http://127.0.0.1:5000/encode_audio --output encoded_audio.wav
+curl -u username:password -X POST -F "file=@path_to_your_audio.wav" -F "message=Your secret message" -F "password=Strong_Pasaaword" http://127.0.0.1:5000/encode_audio --output encoded_audio.wav
 ```
 
-Using Postman:
+#### Decode Audio
 
-1. Select `POST` method.
-2. Enter `http://127.0.0.1:5000/encode_audio` in the URL field.
-3. In the `Body` tab, select `form-data`.
-4. Add a key `file`, set type to `File`, and choose the audio file.
-5. Add another key `message`, set type to `Text`, and enter the secret message.
-6. Click `Send`.
-7. Save the response as a file named `encoded_audio.wav`.
+- **URL:** `/decode_audio`
+- **Method:** `POST`
+- **Description:** Decodes and decrypts a message from an audio file.
+- **Authentication:** HTTP Basic Authentication
+
+##### Request
+
+- **Headers:**
+  - `Authorization: Basic <base64-encoded-credentials>`
+  - `Content-Type: multipart/form-data`
+- **Parameters:**
+  - `file`: (required) The audio file to decode the message from.
+  - `password`: (required) The password to decrypt the message.
+
+##### Example Request
+
+Using `curl`:
+
+```sh
+curl -u username:password -X POST -F "file=@encoded_audio.wav" -F "password=Strong_Pasaaword" http://127.0.0.1:5000/decode_audio
+```
 
 ##### Response
 
