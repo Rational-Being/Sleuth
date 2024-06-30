@@ -23,12 +23,16 @@ def encode_audio(audio_path, message, output_path):
     bin_message = ''.join(format(ord(char), '08b') for char in message)
     message_len = len(bin_message)
     audio_len = len(samples)
+    # print(len(samples))
+    
 
     if message_len > audio_len:
         raise ValueError("Message is too long to encode in this audio file.")
 
     for i in range(message_len):
+        #~1 bitwise NOT of 1 is equivalent to -2 in binary
         samples[i] = (samples[i] & ~1) | int(bin_message[i])
+    # print(samples)
 
     encoded_audio = audio._spawn(samples.tobytes())
     encoded_audio.export(output_path, format="wav")

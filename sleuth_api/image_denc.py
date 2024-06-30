@@ -26,6 +26,7 @@ def encode_image(image_path, message, output_path):
     for y in range(height):
         for x in range(width):
             pixel = list(image.getpixel((x, y)))
+            # print(pixel)
             for n in range(3):
                 if idx < len(bin_message):
                     pixel[n] = int(format(pixel[n], "08b")[:-1] + bin_message[idx], 2)
