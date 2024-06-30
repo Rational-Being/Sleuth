@@ -1,0 +1,10 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-HTTPAuth==4.8.0
+Flask-Bcrypt==1.0.1
+python-dotenv==0.21.0
+Pillow==9.4.0
+opencv-python==4.10.0.84
+pydub==0.25.1
+ffmpeg-python==0.2.0
+cryptography==38.0.4
