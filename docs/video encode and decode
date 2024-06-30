@@ -1,0 +1,102 @@
+#### Encode Video
+
+- **URL:** `/encode_video`
+- **Method:** `POST`
+- **Description:** Encodes a secret message into a video file and returns the modified video file.
+
+##### Request
+
+- **Headers:**
+  - `Content-Type: multipart/form-data`
+- **Parameters:**
+  - `file`: (required) The video file to encode the message into. Must be provided as a form-data file upload.
+  - `message`: (required) The secret message to encode into the video file. Must be provided as a form-data text field.
+
+##### Example Request
+
+Using `curl`:
+
+```sh
+curl -X POST -F "file=@path_to_your_video.avi" -F "message=Your secret message" http://127.0.0.1:5000/encode_video --output encoded_video.avi
+```
+
+Using Postman:
+
+1. Select `POST` method.
+2. Enter `http://127.0.0.1:5000/encode_video` in the URL field.
+3. In the `Body` tab, select `form-data`.
+4. Add a key `file`, set type to `File`, and choose the video file.
+5. Add another key `message`, set type to `Text`, and enter the secret message.
+6. Click `Send`.
+7. Save the response as a file named `encoded_video.avi`.
+
+##### Response
+
+- **Success (200 OK):**
+  - **Description:** The encoded video file.
+  - **Content-Type:** `video/x-msvideo`
+  - The response contains the encoded video as a downloadable file.
+
+- **Error (400 Bad Request):**
+  - **Description:** Returned when the request is missing required parameters or contains invalid data.
+  - **Content-Type:** `application/json`
+  - **Body:**
+    ```json
+    {
+      "error": "Error message describing the issue"
+    }
+    ```
+
+- **Error (500 Internal Server Error):**
+  - **Description:** Returned when there is an internal server error during the encoding process.
+  - **Content-Type:** `application/json`
+  - **Body:**
+    ```json
+    {
+      "error": "Error message describing the issue"
+    }
+    ```
+
+#### Decode Video
+
+- **URL:** `/decode_video`
+- **Method:** `POST`
+- **Description:** Decodes and retrieves the hidden message from an encoded video file.
+
+##### Request
+
+- **Headers:**
+  - `Content-Type: multipart/form-data`
+- **Parameters:**
+  - `file`: (required) The encoded video file to decode the message from. Must be provided as a form-data file upload.
+
+##### Example Request
+
+Using `curl`:
+
+```sh
+curl -X POST -F "file=@encoded_video.avi" http://127.0.0.1:5000/decode_video
+```
+
+Using Postman:
+
+1. Select `POST` method.
+2. Enter `http://127.0.0.1:5000/decode_video` in the URL field.
+3. In the `Body` tab, select `form-data`.
+4. Add a key `file`, set type to `File`, and choose the encoded video file.
+5. Click `Send`.
+
+##### Response
+
+- **Success (200 OK):**
+  - **Description:** The hidden message retrieved from the video file.
+  - **Content-Type:** `application/json`
+  - **Body:**
+    ```json
+    {
+      "message": "The hidden message"
+    }
+    ```
+
+- **Error (400 Bad Request):**
+  - **Description:** Returned when the

@@ -1,0 +1,208 @@
+### Testing the Audio Encoding and Decoding
+
+1. **Run the Flask application:**
+
+    ```sh
+    python app.py
+    ```
+
+2. **Use `curl` or Postman to test the `/encode_audio` and `/decode_audio` endpoints:**
+
+    ```sh
+    # Encode audio
+    curl -X POST -F "file=@path_to_your_audio.wav" -F "message=Your secret message" http://127.0.0.1:5000/encode_audio --output encoded_audio.wav
+
+    # Decode audio
+    curl -X POST -F "file=@encoded_audio.wav" http://127.0.0.1:5000/decode_audio
+    ```
+
+### Comprehensive Documentation for Audio Encoding and Decoding Endpoints
+
+#### Encode Audio
+
+- **URL:** `/encode_audio`
+- **Method:** `POST`
+- **Description:** Encodes a secret message into an audio file and returns the modified audio file.
+
+##### Request
+
+- **Headers:**
+  - `Content-Type: multipart/form-data`
+- **Parameters:**
+  - `file`: (required) The audio file to encode the message into. Must be provided as a form-data file upload.
+  - `message`: (required) The secret message to encode into the audio file. Must be provided as a form-data text field.
+
+##### Example Request
+
+Using `curl`:
+
+```sh
+curl -X POST -F "file=@path_to_your_audio.wav" -F "message=Your secret message" http://127.0.0.1:5000/encode_audio --output encoded_audio.wav
+```
+
+Using Postman:
+
+1. Select `POST` method.
+2. Enter `http://127.0.0.1:5000/encode_audio` in the URL field.
+3. In the `Body` tab, select `form-data`.
+4. Add a key `file`, set type to `File`, and choose the audio file.
+5. Add another key `message`, set type to `Text`, and enter the secret message.
+6. Click `Send`.
+7. Save the response as a file named `encoded_audio.wav`.
+
+##### Response
+
+- **Success (200 OK):**
+  - **Description:** The encoded audio file.
+  - **Content-Type:** `audio/wav`
+  - The response contains the encoded audio as a downloadable file.
+
+- **Error (400 Bad Request):**
+  - **Description:** Returned when the request is missing required parameters or contains invalid data.
+  - **Content-Type:** `application/json`
+  - **Body:**
+    ```json
+    {
+      "error": "Error message describing the issue"
+    }
+    ```
+
+- **Error (500 Internal Server Error):**
+  - **Description:** Returned when there is an internal server error during the encoding process.
+  - **Content-Type:** `application/json`
+  - **Body:**
+    ```json
+    {
+      "error": "Error message describing the issue"
+   
+
+ }
+    ```
+
+##### Example Response
+
+- **Success:**
+  The response contains the encoded audio file as binary data.
+
+- **Error:**
+  ```json
+  {
+    "error": "No file part"
+  }
+  ```
+
+  ```json
+  {
+    "error": "No selected file"
+  }
+  ```
+
+  ```json
+  {
+    "error": "No message provided"
+  }
+  ```
+
+  ```json
+  {
+    "error": "Message is too long to encode in this audio file."
+  }
+  ```
+
+  ```json
+  {
+    "error": "Detailed error message for internal server error"
+  }
+  ```
+
+
+
+
+#### Decode Audio
+
+- **URL:** `/decode_audio`
+- **Method:** `POST`
+- **Description:** Decodes a secret message from an audio file.
+
+##### Request
+
+- **Headers:**
+  - `Content-Type: multipart/form-data`
+- **Parameters:**
+  - `file`: (required) The audio file from which to decode the message. Must be provided as a form-data file upload.
+
+##### Example Request
+
+Using `curl`:
+
+```sh
+curl -X POST -F "file=@encoded_audio.wav" http://127.0.0.1:5000/decode_audio
+```
+
+Using Postman:
+
+1. Select `POST` method.
+2. Enter `http://127.0.0.1:5000/decode_audio` in the URL field.
+3. In the `Body` tab, select `form-data`.
+4. Add a key `file`, set type to `File`, and choose the encoded audio file.
+5. Click `Send`.
+
+##### Response
+
+- **Success (200 OK):**
+  - **Description:** The decoded message.
+  - **Content-Type:** `application/json`
+  - **Body:**
+    ```json
+    {
+      "message": "Your decoded secret message"
+    }
+    ```
+
+- **Error (400 Bad Request):**
+  - **Description:** Returned when the request is missing the required file parameter or contains an invalid file.
+  - **Content-Type:** `application/json`
+  - **Body:**
+    ```json
+    {
+      "error": "Error message describing the issue"
+    }
+    ```
+
+- **Error (500 Internal Server Error):**
+  - **Description:** Returned when there is an internal server error during the decoding process.
+  - **Content-Type:** `application/json`
+  - **Body:**
+    ```json
+    {
+      "error": "Error message describing the issue"
+    }
+    ```
+
+##### Example Response
+
+- **Success:**
+  ```json
+  {
+    "message": "Your decoded secret message"
+  }
+  ```
+
+- **Error:**
+  ```json
+  {
+    "error": "No file part"
+  }
+  ```
+
+  ```json
+  {
+    "error": "No selected file"
+  }
+  ```
+
+  ```json
+  {
+    "error": "Detailed error message for internal server error"
+  }
+  ```

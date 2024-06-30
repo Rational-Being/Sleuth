@@ -1,0 +1,119 @@
+### Testing User Authentication
+
+1. **Run the Flask application:**
+
+    ```sh
+    python app.py
+    ```
+
+2. **Register a new user using `curl` or Postman:
+
+**
+
+    ```sh
+    curl -X POST -H "Content-Type: application/json" -d '{"username":"your_username", "password":"your_password"}' http://127.0.0.1:5000/register
+    ```
+
+    Using Postman:
+    - Select `POST` method.
+    - Enter `http://127.0.0.1:5000/register` in the URL field.
+    - In the `Body` tab, select `raw` and choose `JSON`.
+    - Add the JSON payload:
+        ```json
+        {
+          "username": "your_username",
+          "password": "your_password"
+        }
+        ```
+    - Click `Send`.
+
+3. **Access protected routes using `curl` with HTTP Basic Authentication:**
+
+    ```sh
+    curl -u your_username:your_password -X POST -F "file=@path_to_your_video.avi" -F "message=Your secret message" http://127.0.0.1:5000/encode_video --output encoded_video.avi
+    ```
+
+    ```sh
+    curl -u your_username:your_password -X POST -F "file=@encoded_video.avi" http://127.0.0.1:5000/decode_video
+    ```
+
+### Comprehensive Documentation for User Authentication
+
+#### Register User
+
+- **URL:** `/register`
+- **Method:** `POST`
+- **Description:** Registers a new user.
+
+##### Request
+
+- **Headers:**
+  - `Content-Type: application/json`
+- **Parameters:**
+  - `username`: (required) The desired username for the new user.
+  - `password`: (required) The desired password for the new user.
+
+##### Example Request
+
+Using `curl`:
+
+```sh
+curl -X POST -H "Content-Type: application/json" -d '{"username":"your_username", "password":"your_password"}' http://127.0.0.1:5000/register
+```
+
+Using Postman:
+
+1. Select `POST` method.
+2. Enter `http://127.0.0.1:5000/register` in the URL field.
+3. In the `Body` tab, select `raw` and choose `JSON`.
+4. Add the JSON payload:
+    ```json
+    {
+      "username": "your_username",
+      "password": "your_password"
+    }
+    ```
+5. Click `Send`.
+
+##### Response
+
+- **Success (201 Created):**
+  - **Description:** User registered successfully.
+  - **Content-Type:** `application/json`
+  - **Body:**
+    ```json
+    {
+      "message": "User registered successfully"
+    }
+    ```
+
+- **Error (400 Bad Request):**
+  - **Description:** Returned when the request is missing required parameters or the user already exists.
+  - **Content-Type:** `application/json`
+  - **Body:**
+    ```json
+    {
+      "error": "Error message describing the issue"
+    }
+    ```
+
+#### Protected Routes
+
+Protected routes require HTTP Basic Authentication. Use your registered username and password to access them.
+
+##### Example Request for a Protected Route
+
+Using `curl` with HTTP Basic Authentication:
+
+```sh
+curl -u your_username:your_password -X POST -F "file=@path_to_your_video.avi" -F "message=Your secret message" http://127.0.0.1:5000/encode_video --output encoded_video.avi
+```
+
+Using Postman:
+
+1. Select the request method (e.g., `POST` for encoding).
+2. Enter the URL of the protected route (e.g., `http://127.0.0.1:5000/encode_video`).
+3. In the `Authorization` tab, select `Basic Auth`.
+4. Enter your username and password.
+5. In the `Body` tab, select `form-data` and add the required parameters (e.g., `file` and `message`).
+6. Click `Send`.
