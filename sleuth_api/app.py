@@ -6,6 +6,8 @@ import os
 from image_denc import encode_image, decode_image
 from audio_denc import encode_audio, decode_audio
 from video_denc import encode_video, decode_video
+from utils import encrypt_message, decrypt_message
+
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -23,7 +25,6 @@ if not os.path.exists(app.config['ENCODED_FOLDER']):
     os.makedirs(app.config['ENCODED_FOLDER'])
 
 with app.app_context():
-    # db.drop_all()
     db.create_all()
 
 @auth.verify_password
@@ -49,7 +50,7 @@ def register():
     user.set_password(password)
     db.session.add(user)
     db.session.commit()
-    return jsonify({'message': 'Account registered successfully'}), 201
+    return jsonify({'message': 'User registered successfully'}), 201
 
 @app.route('/encode_image', methods=['POST'])
 @auth.login_required
@@ -62,9 +63,11 @@ def encode_image_route():
         return jsonify({'error': 'No selected file'}), 400
 
     message = request.form.get('message', '')
-    if not message:
-        return jsonify({'error': 'No message provided'}), 400
+    password = request.form.get('password', '')
+    if not message or not password:
+        return jsonify({'error': 'Message and password are required'}), 400
 
+    encrypted_message = encrypt_message(message, password)
     filename = file.filename
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
@@ -73,11 +76,11 @@ def encode_image_route():
     output_path = os.path.join(app.config['ENCODED_FOLDER'], output_filename)
     
     try:
-        encode_image(file_path, message, output_path)
+        encode_image(file_path, encrypted_message, output_path)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-    file_record = File(filename=filename, encoded_filename=output_filename, upload_date=datetime.utcnow(), message=message, user_id=auth.current_user().id)
+    file_record = File(filename=filename, encoded_filename=output_filename, upload_date=datetime.utcnow(), message=encrypted_message, user_id=auth.current_user().id)
     db.session.add(file_record)
     db.session.commit()
     
@@ -93,12 +96,17 @@ def decode_image_route():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
+    password = request.form.get('password', '')
+    if not password:
+        return jsonify({'error': 'Password is required'}), 400
+
     filename = file.filename
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
 
     try:
-        message = decode_image(file_path)
+        encrypted_message = decode_image(file_path)
+        message = decrypt_message(encrypted_message, password)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -115,9 +123,11 @@ def encode_audio_route():
         return jsonify({'error': 'No selected file'}), 400
 
     message = request.form.get('message', '')
-    if not message:
-        return jsonify({'error': 'No message provided'}), 400
+    password = request.form.get('password', '')
+    if not message or not password:
+        return jsonify({'error': 'Message and password are required'}), 400
 
+    encrypted_message = encrypt_message(message, password)
     filename = file.filename
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
@@ -126,11 +136,11 @@ def encode_audio_route():
     output_path = os.path.join(app.config['ENCODED_FOLDER'], output_filename)
     
     try:
-        encode_audio(file_path, message, output_path)
+        encode_audio(file_path, encrypted_message, output_path)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-    file_record = File(filename=filename, encoded_filename=output_filename, upload_date=datetime.utcnow(), message=message, user_id=auth.current_user().id)
+    file_record = File(filename=filename, encoded_filename=output_filename, upload_date=datetime.utcnow(), message=encrypted_message, user_id=auth.current_user().id)
     db.session.add(file_record)
     db.session.commit()
     
@@ -146,12 +156,17 @@ def decode_audio_route():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
+    password = request.form.get('password', '')
+    if not password:
+        return jsonify({'error': 'Password is required'}), 400
+
     filename = file.filename
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
 
     try:
-        message = decode_audio(file_path)
+        encrypted_message = decode_audio(file_path)
+        message = decrypt_message(encrypted_message, password)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -168,9 +183,11 @@ def encode_video_route():
         return jsonify({'error': 'No selected file'}), 400
 
     message = request.form.get('message', '')
-    if not message:
-        return jsonify({'error': 'No message provided'}), 400
+    password = request.form.get('password', '')
+    if not message or not password:
+        return jsonify({'error': 'Message and password are required'}), 400
 
+    encrypted_message = encrypt_message(message, password)
     filename = file.filename
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
@@ -179,11 +196,11 @@ def encode_video_route():
     output_path = os.path.join(app.config['ENCODED_FOLDER'], output_filename)
     
     try:
-        encode_video(file_path, message, output_path)
+        encode_video(file_path, encrypted_message, output_path)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-    file_record = File(filename=filename, encoded_filename=output_filename, upload_date=datetime.utcnow(), message=message, user_id=auth.current_user().id)
+    file_record = File(filename=filename, encoded_filename=output_filename, upload_date=datetime.utcnow(), message=encrypted_message, user_id=auth.current_user().id)
     db.session.add(file_record)
     db.session.commit()
     
@@ -199,20 +216,27 @@ def decode_video_route():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
+    password = request.form.get('password', '')
+    if not password:
+        return jsonify({'error': 'Password is required'}), 400
+
     filename = file.filename
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
 
     try:
-        message = decode_video(file_path)
+        encrypted_message = decode_video(file_path)
+        message = decrypt_message(encrypted_message, password)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
     return jsonify({'message': message})
 
+
 @app.route('/')
 def index():
     return "Welcome to Sleuth API"
+
 
 if __name__ == '__main__':
     app.run(debug=True)

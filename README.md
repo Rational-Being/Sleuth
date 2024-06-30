@@ -54,3 +54,5 @@ The function uses the `pydub` library to load the audio file, convert the sample
 The `decode_audio` function returns the decoded message as a string.
 
 You can use these functions in your Flask application to handle the encoding and decoding of steganographic messages in audio files.
+
+
